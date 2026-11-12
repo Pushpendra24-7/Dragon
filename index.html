@@ -1109,4 +1109,84 @@ renderer.render=(s,c)=>{c21.getDelta();const tm=c21.elapsedTime;
   M.mem2.color.setHSL((base+.15)%1,.8,.25);M.mem2.emissive.setHSL((base+.15)%1,1,.45);LM.color.setHSL((ha+.4)%1,1,.6)}
  oR21(s,c)};
 try{if(localStorage.getItem('dx01paint3')=='rainbow')setPaint('rainbow',true)}catch(err){}
-</script></body></html>
+</script><style>
+
+/* RESPONSIVE PATCH — compact phones, tablets and landscape */
+*,*::before,*::after{box-sizing:border-box}
+html,body{width:100%;min-width:0;min-height:100%;overscroll-behavior:none}
+body{height:100dvh;height:100svh;overflow:hidden}
+#c{position:fixed;inset:0;width:100%;height:100%;height:100dvh;overflow:hidden;touch-action:none}
+#c canvas{width:100%!important;height:100%!important;display:block;touch-action:none}
+button,input{ -webkit-tap-highlight-color:transparent }
+button{touch-action:manipulation}
+nav{max-width:calc(100vw - 24px);max-width:calc(100% - 24px);justify-content:center;flex-wrap:nowrap;gap:3px}
+nav button{white-space:nowrap;min-height:40px}
+header{padding-top:calc(14px + env(safe-area-inset-top,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+@media(max-width:700px){
+  header{align-items:center;padding:calc(10px + env(safe-area-inset-top,0px)) 12px 8px;gap:8px}
+  h1{font-size:clamp(13px,4vw,17px);letter-spacing:.16em}
+  h1 span{margin-left:5px;letter-spacing:.08em}
+  .sub{font-size:10px;letter-spacing:.02em;margin-top:3px}
+  .live{font-size:9px;letter-spacing:.08em;padding:5px 8px;gap:6px;white-space:nowrap}
+  .live i{width:6px;height:6px;flex:0 0 6px}
+  nav{left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom,0px));transform:none;width:auto;padding:4px;border-radius:11px;gap:2px}
+  nav button{flex:1;min-width:0;padding:10px 3px;font-size:clamp(9px,2.5vw,11px);letter-spacing:.035em;min-height:42px}
+  #pn{left:8px!important;right:8px!important;top:auto!important;bottom:calc(66px + env(safe-area-inset-bottom,0px))!important;width:auto!important;max-height:min(38dvh,300px)!important;border-radius:12px 12px 8px 8px!important}
+  #pn .pb{overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+  #pn button{min-height:34px}
+  #enter{top:calc(58px + env(safe-area-inset-top,0px))!important;max-width:calc(100vw - 32px);white-space:nowrap;padding:10px 16px!important;font-size:10px!important;letter-spacing:.13em!important}
+  .tag{display:none}
+  #ld{padding:20px;text-align:center;font-size:11px;letter-spacing:.12em}
+  /* Keep the flight HUD clear of the bottom navigation and screen cut-outs. */
+  #pn input[type=range]{min-height:24px}
+}
+@media(max-width:390px){
+  header{padding-left:10px;padding-right:10px}
+  h1{font-size:12px;letter-spacing:.12em}
+  .sub{font-size:9px}
+  .live{font-size:8px;padding:4px 6px}
+  nav{left:8px;right:8px}
+  nav button{padding-left:1px;padding-right:1px;font-size:9px}
+}
+@media(orientation:landscape) and (max-height:520px){
+  header{padding-top:calc(6px + env(safe-area-inset-top,0px));padding-bottom:4px}
+  h1{font-size:13px}
+  .sub{font-size:9px}
+  nav{left:auto;right:10px;bottom:8px;transform:none;width:auto;max-width:55vw}
+  nav button{padding:7px 9px;min-height:34px;font-size:10px}
+  #pn{top:48px!important;bottom:52px!important;right:8px!important;left:auto!important;width:min(250px,42vw)!important;max-height:none!important}
+  #enter{top:48px!important}
+}
+@media(prefers-reduced-motion:reduce){.live i{animation:none}}
+
+</style>
+
+<script>
+/* Final responsive sizing: reacts to browser chrome, orientation and panel changes. */
+(function(){
+  const host=document.getElementById('c');
+  if(!host||!window.renderer||!window.cam)return;
+  let raf=0,lastW=0,lastH=0;
+  function fitViewport(){
+    cancelAnimationFrame(raf);
+    raf=requestAnimationFrame(()=>{
+      const w=Math.max(1,host.clientWidth||innerWidth);
+      const h=Math.max(1,host.clientHeight||innerHeight);
+      if(w===lastW&&h===lastH)return;
+      lastW=w;lastH=h;
+      const mobile=matchMedia('(max-width: 700px)').matches;
+      renderer.setPixelRatio(Math.min(devicePixelRatio||1,mobile?1.35:2));
+      renderer.setSize(w,h,false);
+      cam.aspect=w/h;
+      cam.updateProjectionMatrix();
+    });
+  }
+  if('ResizeObserver' in window)new ResizeObserver(fitViewport).observe(host);
+  addEventListener('resize',fitViewport,{passive:true});
+  addEventListener('orientationchange',()=>setTimeout(fitViewport,180),{passive:true});
+  if(window.visualViewport)visualViewport.addEventListener('resize',fitViewport,{passive:true});
+  fitViewport();
+})();
+</script>
+
+</body></html>
